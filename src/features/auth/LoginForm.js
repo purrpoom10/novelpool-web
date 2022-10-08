@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import Spinner from '../../components/ui/Spinner';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLoading } from '../../contexts/LoadingContext';
-import { validateRegister } from '../../validations/userValidate';
 
 function LoginForm() {
   const { login } = useAuth();
-  const { startLoading, stopLoading } = useLoading();
+  const { startLoading, stopLoading, loading } = useLoading();
   const [showModal, setShowModal] = useState(false);
 
   const [input, setInput] = useState({
@@ -26,7 +26,7 @@ function LoginForm() {
       await login(input);
       toast.success('success login');
     } catch (err) {
-      toast.error(err.response.data.message);
+      toast.error('username is invalid');
     } finally {
       stopLoading();
     }
@@ -49,7 +49,7 @@ function LoginForm() {
               <div className='border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none'>
                 {/*header*/}
                 <div className='flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t'>
-                  <h3 className='text-3xl font-semibold'>Modal Title</h3>
+                  <h3 className='text-3xl font-semibold'>เข้าสู่ระบบ</h3>
                   <button
                     className='p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none'
                     onClick={() => setShowModal(false)}
@@ -92,14 +92,18 @@ function LoginForm() {
                           </label>
                         </label>
                       </div>
-                      <div className='flex'>
-                        <button
-                          type='submit'
-                          className='w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900'
-                        >
-                          Log in
-                        </button>
-                      </div>
+                      {loading ? (
+                        <Spinner />
+                      ) : (
+                        <div className='flex'>
+                          <button
+                            type='submit'
+                            className='w-full px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900'
+                          >
+                            Log in
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </form>
                 </div>
@@ -110,15 +114,6 @@ function LoginForm() {
                     onClick={() => setShowModal(false)}
                   >
                     Close
-                  </button>
-                </div>
-                <div className='flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b'>
-                  <button
-                    className='text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
-                    type='button'
-                    onClick={() => startLoading()}
-                  >
-                    test spinner
                   </button>
                 </div>
               </div>

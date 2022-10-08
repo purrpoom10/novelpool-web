@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessToken } from '../utils/localStorage';
+import { getAccessToken, removeAccessToken } from '../utils/localStorage';
 import { API_ENDPOINT_URL } from './env';
 
 axios.defaults.baseURL = API_ENDPOINT_URL;
@@ -13,6 +13,17 @@ axios.interceptors.request.use(
     return config;
   },
   (err) => Promise.reject(err)
+);
+
+axios.interceptors.response.use(
+  (response) => response,
+  (err) => {
+    if (err.response.status === 401) {
+      removeAccessToken();
+      window.location.assign('/');
+    }
+    return err;
+  }
 );
 
 export default axios;

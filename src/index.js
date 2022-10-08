@@ -7,6 +7,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import AuthContextProvider from './contexts/AuthContext';
 import LoadingContextProvider from './contexts/LoadingContext';
+import NovelContextProvider from './contexts/NovelContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -14,7 +15,9 @@ root.render(
   <BrowserRouter>
     <LoadingContextProvider>
       <AuthContextProvider>
-        <App />
+        <NovelContextProvider>
+          <App />
+        </NovelContextProvider>
       </AuthContextProvider>
     </LoadingContextProvider>
   </BrowserRouter>

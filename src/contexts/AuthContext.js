@@ -1,24 +1,38 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 import * as authService from '../api/authApi';
-import { addAccessToken } from '../utils/localStorage';
+import Spinner from '../components/ui/Spinner';
+import { addAccessToken, getAccessToken } from '../utils/localStorage';
 
 const AuthContext = createContext();
 
 function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        if (getAccessToken()) {
+          await getMe();
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    fetch();
+  }, []);
 
   const getMe = async () => {
     const res = await authService.getMe();
     setUser(res.data.user);
-    // console.log(res.data.user);
   };
 
   const register = async (input) => {
-    const res = await authService.register(input);
-    setUser(true);
-
-    addAccessToken(res.data.token);
+    await authService.register(input);
   };
 
   const login = async (input) => {
@@ -26,9 +40,13 @@ function AuthContextProvider({ children }) {
     addAccessToken(res.data.token);
     getMe();
   };
-  console.log(user);
+
+  if (initialLoading) return <Spinner />;
+
   return (
-    <AuthContext.Provider value={{ user, register, login }}>
+    <AuthContext.Provider
+      value={{ user, register, login, initialLoading, setUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

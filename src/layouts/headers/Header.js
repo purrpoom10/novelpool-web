@@ -1,27 +1,62 @@
-import { useAuth } from '../contexts/AuthContext';
-import LoginForm from '../features/auth/LoginForm';
-import RegisterForm from '../features/auth/RegisterForm';
+import LoginForm from '../../features/auth/LoginForm';
+import { useAuth } from '../../contexts/AuthContext';
+import RegisterForm from '../../features/auth/RegisterForm';
+import UserTag from './UserTag';
+import { Link, useNavigate } from 'react-router-dom';
+import { removeAccessToken } from '../../utils/localStorage';
 
 function Header() {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+
+  const logout = () => {
+    setUser(null);
+    removeAccessToken();
+    navigate('/');
+  };
   return (
     <>
-      <nav className='bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600'>
-        <div className='container flex flex-wrap justify-between items-center mx-auto'>
-          <a href='https://flowbite.com/' className='flex items-center'>
-            <img
-              src='https://flowbite.com/docs/images/logo.svg'
-              className='mr-3 h-6 sm:h-9'
-              alt='Flowbite Logo'
-            />
-            <span className='self-center text-xl font-semibold whitespace-nowrap dark:text-white'>
-              Novel Pool
-            </span>
-          </a>
+      <nav className='bg-white px-2 sm:px-4 py-2.5 dark:bg-gray-900 w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600'>
+        <div className='container flex flex-wrap justify-around items-center mx-auto'>
+          <Link to='/'>
+            <div className='flex items-center'>
+              <img
+                src='https://img.freepik.com/premium-photo/3d-render-flamingo-inflatable-ring-isolated-white-clipping-path_224530-2469.jpg?w=2000'
+                className='mr-3 h-6 sm:h-9 '
+                alt='NovelPool Logo'
+              />
+              <span className='self-center text-3xl font-semibold whitespace-nowrap text-blue-500 font-sans'>
+                Novel Pool
+              </span>
+            </div>
+          </Link>
           <div className='flex md:order-2'>
             {user ? (
               <>
-                <p>{`user : ${user.userName}`}</p>
+                <UserTag />
+                <Link to='/insertnovel'>
+                  <button
+                    className='bg-blue-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
+                    type='button'
+                  >
+                    สร้างนิยาย
+                  </button>
+                </Link>
+                <Link to='/mynovel'>
+                  <button
+                    className='bg-blue-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
+                    type='button'
+                  >
+                    ผลงานของฉัน
+                  </button>
+                </Link>
+                <button
+                  className='bg-blue-500 text-white active:bg-pink-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
+                  type='button'
+                  onClick={() => logout()}
+                >
+                  Log out
+                </button>
               </>
             ) : (
               <>
@@ -30,7 +65,7 @@ function Header() {
               </>
             )}
 
-            <button
+            {/* <button
               data-collapse-toggle='navbar-sticky'
               type='button'
               className='inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
@@ -51,7 +86,7 @@ function Header() {
                   clipRule='evenodd'
                 />
               </svg>
-            </button>
+            </button> */}
           </div>
           {/* <div
             className='hidden justify-between items-center w-full md:flex md:w-auto md:order-1'
